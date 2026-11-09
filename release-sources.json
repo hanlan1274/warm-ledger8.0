@@ -1,0 +1,13 @@
+{
+  "lib/category_catalog.dart": "267c44f1071c06ee4511d9570f73749ffbc4be8fa50ac7b958256b803f58f3cf",
+  "lib/editor.dart": "8656affabe149555801ae29c84520f70041179ac15e99b0731bf7af860a565c3",
+  "lib/expense_page.dart": "511cc64a96baaf8beeb71dec36e003f1f7b5ed34e010b3726ab3841d137ccaac",
+  "lib/main.dart": "474b57d40fe601605bcfbd8971d5cfdfdaa248bc047c132cb5e4c920616eb7e6",
+  "lib/model.dart": "8ddead8d0efc32ac7ac7246d1c1f9ca5e8d8ebc065f1acb6953f05f0d4768e8f",
+  "lib/storage.dart": "1112786df1df18d17ad3b75ab755897ed1925316cdefd0ca612084608a82b3c9",
+  "lib/themes.dart": "00e8e8ef512b5a712a8f8c3ab0c5662477ca2da1a9a5ecd97fe665f97eb23900",
+  "lib/theme_picker.dart": "d4d94ed089133600a9d0095277562a77fe8a40c018ab86a0caa8492501f9bb5a",
+  "lib/visuals.dart": "c0033a371bf33fc11403e279211dd6e1f0150233a9480a72e7960352e78d0b31",
+  "lib/workspace_pages.dart": "bc1ab02787ae795fadf424a6d35f2832f9ebb4558e453b48584760a7e3cbd347",
+  "pubspec.yaml": "ace3bc5e1234ba37b030399ff090a33dbfdf5b39184ba692a52f5d65b2bfcf0c"
+}
