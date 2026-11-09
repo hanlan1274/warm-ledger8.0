@@ -1,0 +1,75 @@
+name: Build Android APK
+on:
+  workflow_dispatch:
+    inputs:
+      first_build:
+        description: '仅首次打包勾选：生成新签名；以后使用已保存的签名 secrets'
+        required: true
+        type: boolean
+        default: true
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify delivered release source
+        run: python3 tools/verify_release_sources.py
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          channel: stable
+          cache: true
+      - name: Generate Android shell
+        run: flutter create --platforms=android --org=local.warmledger --project-name=warm_ledger .
+      - name: Prepare signing identity
+        env:
+          FIRST_BUILD: ${{ inputs.first_build }}
+          WARM_KEYSTORE_B64: ${{ secrets.WARM_KEYSTORE_B64 }}
+          WARM_STOREPASS: ${{ secrets.WARM_STOREPASS }}
+        run: python3 tools/signing.py
+      - name: Configure offline Android app
+        run: python3 tools/prepare_android.py
+      - name: Verify Android shell preserved application sources
+        run: python3 tools/verify_release_sources.py
+      - name: Resolve dependencies
+        run: flutter pub get
+      - name: Format and analyze
+        run: |
+          dart format lib test
+          flutter analyze
+      - name: Verify upgraded financial rules
+        run: dart run tools/model_regression.dart
+      - name: Verify accounting and UI
+        run: flutter test
+      - name: Upload Flutter UI captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: warm-ledger-ui-review
+          path: build/ui-review/*.png
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Build signed APK
+        run: flutter build apk --release --build-number=${{ github.run_number }}
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: warm-ledger-0.3.0-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload first signing backup
+        if: env.WARM_NEW_KEY == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: warm-ledger-signing-backup-KEEP-PRIVATE
+          path: signing-backup/signing-secrets.json
+          if-no-files-found: error
+          retention-days: 14
